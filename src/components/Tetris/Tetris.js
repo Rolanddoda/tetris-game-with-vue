@@ -28,7 +28,7 @@ export default {
 	},
 
 	mounted() {
-		// this.game_interval = setInterval(this.game_flow, 1000);
+		this.game_interval = setInterval(this.game_flow, 1000);
 		document.addEventListener('keydown', (event) => {
 			if (event.code === 'ArrowLeft') {
 				this.change_tetris_position(-1)

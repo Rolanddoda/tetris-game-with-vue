@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <button @click="game_flow">Next Iteration</button>
+        <!--<button @click="game_flow">Next Iteration</button>-->
         {{new_tetris_position}}
         TOTAL SCORE: {{total_score}}
         <div class="tetris">
