@@ -1,8 +1,13 @@
 <template>
-    <div class="tetris">
-        <div v-for="(row, index) of arena" :key="index" class="tetris-row">
-            <div v-for="(column, index) of row" :key="index" :class="['tetris-column', { active: column }]">
-                <div class="tetris-item" v-if="false"></div>
+    <div class="wrapper">
+        <button @click="game_flow">Next Iteration</button>
+        {{new_tetris_position}}
+        TOTAL SCORE: {{total_score}}
+        <div class="tetris">
+            <div v-for="(row, index) of arena" :key="index" class="tetris-row">
+                <div v-for="(column, index) of row" :key="index" :class="['tetris-column', { active: column }]">
+                    <div class="tetris-item" v-if="false"></div>
+                </div>
             </div>
         </div>
     </div>
