@@ -37,6 +37,8 @@ export default {
 			}else if (event.code === 'ArrowUp') {
 				const new_matrix = this.rotate_matrix([...this.new_tetris_item.matrix])
 				this.tetris_rotated(new_matrix)
+			}else if (event.code === 'ArrowDown') {
+				this.game_flow()
 			}
 		})
 	},
@@ -87,10 +89,9 @@ export default {
 		should_stop_tetris_flow() {
 			if (this.arena.every(row => row.includes(1))) {
 				clearInterval(this.game_interval)
-				console.log('GAME OVER') //TODO REMOVE THIS LINE
+				this.$refs.game_over.innerHTML = "GAME OVER"
 				return true;
 			}
-
 
 			if (this.new_tetris_position > 8) {
 				this.check_for_score([...this.arena])
@@ -121,7 +122,7 @@ export default {
 		},
 
 		add_new_tetris() {
-			const random_tetris = 6// Math.floor(Math.random() * 6)
+			const random_tetris = Math.floor(Math.random() * 6)
 			this.new_tetris_item = {...tetris_items[random_tetris]}
 			this.new_tetris_position = 0;
 		},
