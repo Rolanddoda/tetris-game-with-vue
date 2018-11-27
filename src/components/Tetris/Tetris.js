@@ -20,27 +20,17 @@ export default {
 		game_interval: null,
 		tetris_before_rotation: null,
 		score_for_row: 10,
-		total_score: 0
+		total_score: 0,
+		game_over: '',
 	}),
 
 	created() {
 		this.add_new_tetris()
+		this.keyboard_controls()
 	},
 
 	mounted() {
 		this.game_interval = setInterval(this.game_flow, 1000);
-		document.addEventListener('keydown', (event) => {
-			if (event.code === 'ArrowLeft') {
-				this.change_tetris_position(-1)
-			}else if (event.code === 'ArrowRight') {
-				this.change_tetris_position(1)
-			}else if (event.code === 'ArrowUp') {
-				const new_matrix = this.rotate_matrix([...this.new_tetris_item.matrix])
-				this.tetris_rotated(new_matrix)
-			}else if (event.code === 'ArrowDown') {
-				this.game_flow()
-			}
-		})
 	},
 
 	methods: {
@@ -63,7 +53,11 @@ export default {
 				this.arena = arena
 				this.new_tetris_position++
 			}else {
-				if (this.new_tetris_item.rotated) {
+				if (this.arena.every(row => row.includes(1)) && pos < 2) {
+					this.game_over = 'GAME OVER'
+					clearInterval(this.game_interval)
+				}
+				else if (this.new_tetris_item.rotated) {
 					this.new_tetris_item = {...this.tetris_before_rotation}
 					this.game_flow()
 					return
@@ -73,6 +67,22 @@ export default {
 					this.add_new_tetris()
 				}
 			}
+		},
+
+		keyboard_controls() {
+			document.addEventListener('keydown', (event) => {
+				if(this.game_over) return
+				if (event.code === 'ArrowLeft') {
+					this.change_tetris_position(-1)
+				}else if (event.code === 'ArrowRight') {
+					this.change_tetris_position(1)
+				}else if (event.code === 'ArrowUp') {
+					const new_matrix = this.rotate_matrix([...this.new_tetris_item.matrix])
+					this.tetris_rotated(new_matrix)
+				}else if (event.code === 'ArrowDown') {
+					this.game_flow()
+				}
+			})
 		},
 
 		arena_collides(arena) {
@@ -87,12 +97,6 @@ export default {
 		},
 
 		should_stop_tetris_flow() {
-			if (this.arena.every(row => row.includes(1))) {
-				clearInterval(this.game_interval)
-				this.$refs.game_over.innerHTML = "GAME OVER"
-				return true;
-			}
-
 			if (this.new_tetris_position > 8) {
 				this.check_for_score([...this.arena])
 				this.remove_active_tetris()

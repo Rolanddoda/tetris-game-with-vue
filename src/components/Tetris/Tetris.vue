@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        TOTAL SCORE: {{total_score}} <h2 ref="game_over"></h2>
+        TOTAL SCORE: {{total_score}} <h2>{{ game_over }}</h2>
         <div class="tetris">
             <div v-for="(row, index) of arena" :key="index" class="tetris-row">
                 <div v-for="(column, index) of row" :key="index" :class="['tetris-column', { active: column }]">
