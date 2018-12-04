@@ -1,4 +1,5 @@
 import { tetris_items } from "./tetris_items";
+import _cloneDeep from 'lodash/cloneDeep';
 
 export default {
 	name: 'Tetris',
@@ -30,10 +31,18 @@ export default {
 	},
 
 	mounted() {
-		this.game_interval = setInterval(this.game_flow, 1000);
+		this.start_new_game(true)
 	},
 
 	methods: {
+
+		start_new_game(init = false) {
+			if (!init) {
+				Object.assign(this.$data, this.$options.data.apply(this))
+				this.add_new_tetris()
+			}
+			this.game_interval = setInterval(this.game_flow, 1000);
+		},
 
 		game_flow() {
 			if (this.should_stop_tetris_flow()) return
@@ -241,23 +250,71 @@ export default {
 			this.game_flow()
 		},
 
-		can_move_tetris(pos) { //pos => position can be 1 or -1
-			const { starts, expands, rows_count, matrix } = this.new_tetris_item
-
-			let cursor = this.new_tetris_position
-			const arena_pos = pos < 0 ? starts - 1 : starts + expands
-			const matrix_pos = pos < 0 ? 0 : matrix[0].length - 1
-			const arena = [...this.arena]
-			let can_move_tetris = true
-			if (cursor === 0) return false
-			if (arena_pos < 0 || arena_pos > 8) return false
-			cursor--
-
-			for (let ar_row = cursor, t_row = rows_count; ar_row > 0 && t_row > 0; ar_row--, t_row--) { //ar_row = arena row, t_row = tetris row
-				if (arena[ar_row][arena_pos] !== 0 && matrix[t_row-1][matrix_pos] !== 0)
-					can_move_tetris = false
+		get_arena_rows(cursor, t_rows) {
+			let a_rows = []
+			for (let i = cursor, j = t_rows.length - 1; j >= 0 && i >= 0; i--, j--) {
+				a_rows.push([...this.arena[i]])
 			}
-			return can_move_tetris
+			return a_rows.reverse()
+		},
+
+		tetris_reached_bounds(rows, dir) { // :Boolean
+			if (dir > 0) {
+				return rows.some(row => row[rows[0].length - 1] !== 0)
+			}
+			return rows.some(row => row[0] !== 0)
+		},
+
+		check_bounds_and_position(dir) {
+			if (this.tetris_reached_bounds(this.new_tetris_item.value, dir))
+				return false //tetris cannot be moved outside of bounds
+			return this.new_tetris_position !== 0
+		},
+
+		can_move_tetris(dir) { //dir => direction can be 1 (right) or -1 (left)
+			if (!this.check_bounds_and_position(dir)) return false
+			const cursor = this.new_tetris_position - 1
+			const t_rows = _cloneDeep(this.new_tetris_item.value) //tetris rows
+			const a_rows = this.get_arena_rows(cursor, t_rows) //arena rows
+			const { starts, expands } = this.new_tetris_item
+
+
+			if (dir > 0) { //tetris moved right
+				return a_rows.every(row => row[starts + expands] === 0)
+			}
+			return a_rows.every(row => row[starts - 1] === 0) //tetris moved left
+
+
+
+
+
+			// NOTE this is the old logic make sure you don't break anything before delete it
+			// const { starts, expands, matrix } = this.new_tetris_item
+			// const rows_count = matrix.length
+			//
+			//
+			// let cursor = this.new_tetris_position
+			// const arena_pos = pos < 0 ? starts - 1 : starts + expands
+			// const matrix_pos = pos < 0 ? 0 : matrix[0].length - 1
+			// const arena = [...this.arena]
+			// let can_move_tetris = true
+			// if (cursor === 0) return false
+			// if (arena_pos < 0 || arena_pos > 8) return false
+			// cursor--
+			//
+			// console.log(this.new_tetris_item)
+			// console.table(arena)
+			// console.table(matrix)
+			// console.log(cursor)
+			//
+			// for (let ar_row = cursor, t_row = rows_count; ar_row > 0 && t_row > 0; ar_row--, t_row--) { //ar_row = arena row, t_row = tetris row
+			// 	console.log(`arena row ${ar_row} in pos ${arena_pos} is ${arena[ar_row][arena_pos]}`)
+			// 	console.log(`matrix row ${t_row-1} in pos ${matrix_pos} is ${matrix[t_row-1][matrix_pos]}`)
+			// 	if (arena[ar_row][arena_pos] !== 0 && matrix[t_row-1][matrix_pos] !== 0)
+			// 		can_move_tetris = false
+			// }
+			// console.log('can remove tetris? ', can_move_tetris)
+			// return can_move_tetris
 		},
 
 		check_for_score(arena) {

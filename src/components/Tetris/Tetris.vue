@@ -1,6 +1,7 @@
 <template>
     <div class="wrapper">
         TOTAL SCORE: {{total_score}} <h2>{{ game_over }}</h2>
+        <button @click="start_new_game()" v-if="game_over">START NEW GAME</button>
         <div class="tetris">
             <div v-for="(row, index) of arena" :key="index" class="tetris-row">
                 <div v-for="(column, index) of row" :key="index" :class="['tetris-column', { active: column }]">
