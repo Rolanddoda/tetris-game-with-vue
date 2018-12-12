@@ -1,6 +1,6 @@
 export const tetris_items = [
   {
-    type: "T",
+    type: 'T',
     value: [[0, 0, 0, 2, 2, 2, 0, 0, 0], [0, 0, 0, 0, 2, 0, 0, 0, 0]],
     rows_count: 2,
     matrix: [[2, 2, 2], [0, 2, 0]],
@@ -11,7 +11,7 @@ export const tetris_items = [
   },
 
   {
-    type: "Z",
+    type: 'Z',
     value: [[0, 0, 0, 2, 2, 0, 0, 0, 0], [0, 0, 0, 0, 2, 2, 0, 0, 0]],
     rows_count: 2,
     matrix: [[2, 2, 0], [0, 2, 2]],
@@ -22,7 +22,7 @@ export const tetris_items = [
   },
 
   {
-    type: "S",
+    type: 'S',
     value: [[0, 0, 0, 0, 2, 2, 0, 0, 0], [0, 0, 0, 2, 2, 0, 0, 0, 0]],
     rows_count: 2,
     matrix: [[0, 2, 2], [2, 2, 0]],
@@ -33,7 +33,7 @@ export const tetris_items = [
   },
 
   {
-    type: "I",
+    type: 'I',
     value: [
       [0, 0, 0, 0, 2, 0, 0, 0, 0],
       [0, 0, 0, 0, 2, 0, 0, 0, 0],
@@ -49,7 +49,7 @@ export const tetris_items = [
 
   {
     //I but horizontal
-    type: "IH",
+    type: 'IH',
     value: [[0, 0, 0, 2, 2, 2, 0, 0, 0]],
     rows_count: 1,
     matrix: [[0, 0, 0], [2, 2, 2], [0, 0, 0]],
@@ -60,7 +60,7 @@ export const tetris_items = [
   },
 
   {
-    type: "O",
+    type: 'O',
     value: [[0, 0, 0, 0, 2, 2, 0, 0, 0], [0, 0, 0, 0, 2, 2, 0, 0, 0]],
     rows_count: 2,
     matrix: [[0, 2, 2], [0, 2, 2]],
@@ -71,7 +71,7 @@ export const tetris_items = [
   },
 
   {
-    type: "L",
+    type: 'L',
     value: [
       [0, 0, 0, 2, 0, 0, 0, 0, 0],
       [0, 0, 0, 2, 0, 0, 0, 0, 0],
@@ -84,4 +84,4 @@ export const tetris_items = [
     rotated: false,
     is_rotatable: true
   }
-];
+]

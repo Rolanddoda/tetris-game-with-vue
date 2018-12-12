@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import Tetris from "@/components/Tetris/Tetris.vue";
+import Tetris from '@/components/Tetris/Tetris.vue'
 export default {
-  name: "app",
+  name: 'app',
   components: {
     Tetris
   }
-};
+}
 </script>
 
 <style lang="scss">
