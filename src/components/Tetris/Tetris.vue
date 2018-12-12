@@ -12,7 +12,7 @@
     </div>
 </template>
 
-<script src="./Tetris.js"></script>
-<style lang="scss" scoped src="./Tetris.scss"></style>
-
-
+<script src="./Tetris.js">
+</script>
+<style lang="scss" scoped src="./Tetris.scss">
+</style>
