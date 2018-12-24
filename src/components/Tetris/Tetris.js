@@ -75,7 +75,6 @@ export default {
         } else if (this.new_tetris_item.rotated) {
           this.new_tetris_item = { ...this.tetris_before_rotation }
           this.game_flow()
-          return
         } else {
           this.remove_active_tetris()
           this.check_for_score([...this.arena])
@@ -292,41 +291,24 @@ export default {
       const cursor = this.new_tetris_position - 1
       const t_rows = _cloneDeep(this.new_tetris_item.value) //tetris rows
       const a_rows = this.get_arena_rows(cursor, t_rows) //arena rows
-      const { starts, expands } = this.new_tetris_item
 
       if (dir > 0) {
         //tetris moved right
-        return a_rows.every(row => row[starts + expands] === 0)
+        return a_rows.every((row, index) => {
+          const ends =
+            t_rows[index].length -
+            1 -
+            t_rows[index]
+              .slice()
+              .reverse()
+              .findIndex(row => row !== 0)
+          return row[ends + 1] === 0
+        })
       }
-      return a_rows.every(row => row[starts - 1] === 0) //tetris moved left
-
-      // NOTE this is the old logic make sure you don't break anything before delete it
-      // const { starts, expands, matrix } = this.new_tetris_item
-      // const rows_count = matrix.length
-      //
-      //
-      // let cursor = this.new_tetris_position
-      // const arena_pos = pos < 0 ? starts - 1 : starts + expands
-      // const matrix_pos = pos < 0 ? 0 : matrix[0].length - 1
-      // const arena = [...this.arena]
-      // let can_move_tetris = true
-      // if (cursor === 0) return false
-      // if (arena_pos < 0 || arena_pos > 8) return false
-      // cursor--
-      //
-      // console.log(this.new_tetris_item)
-      // console.table(arena)
-      // console.table(matrix)
-      // console.log(cursor)
-      //
-      // for (let ar_row = cursor, t_row = rows_count; ar_row > 0 && t_row > 0; ar_row--, t_row--) { //ar_row = arena row, t_row = tetris row
-      // 	console.log(`arena row ${ar_row} in pos ${arena_pos} is ${arena[ar_row][arena_pos]}`)
-      // 	console.log(`matrix row ${t_row-1} in pos ${matrix_pos} is ${matrix[t_row-1][matrix_pos]}`)
-      // 	if (arena[ar_row][arena_pos] !== 0 && matrix[t_row-1][matrix_pos] !== 0)
-      // 		can_move_tetris = false
-      // }
-      // console.log('can remove tetris? ', can_move_tetris)
-      // return can_move_tetris
+      return a_rows.every((row, index) => {
+        const starts = t_rows[index].findIndex(row => row !== 0)
+        return row[starts - 1] === 0
+      }) //tetris moved left
     },
 
     check_for_score(arena) {
