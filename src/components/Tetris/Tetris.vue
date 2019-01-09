@@ -15,7 +15,7 @@
                         <div class="your-score">
                             Your score is {{ total_score }}
                         </div>
-                        <v-btn large outline dark>Start new game</v-btn>
+                        <v-btn large outline dark @click="start_new_game()">Start new game</v-btn>
                     </div>
                 </transition>
             </div>
