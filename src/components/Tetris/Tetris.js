@@ -22,16 +22,13 @@ export default {
     tetris_before_rotation: null,
     score_for_row: 10,
     total_score: 0,
-    game_over: ''
+    game_over: '',
+    game_started: false
   }),
 
   created() {
     this.add_new_tetris()
     this.keyboard_controls()
-  },
-
-  mounted() {
-    this.start_new_game(true)
   },
 
   methods: {
@@ -41,6 +38,7 @@ export default {
         this.add_new_tetris()
       }
       this.game_interval = setInterval(this.game_flow, 1000)
+      this.game_started = true
     },
 
     game_flow() {
@@ -85,7 +83,7 @@ export default {
 
     keyboard_controls() {
       document.addEventListener('keydown', event => {
-        if (this.game_over) return
+        if (this.game_over || !this.game_started) return
         if (event.code === 'ArrowLeft') {
           this.change_tetris_position(-1)
         } else if (event.code === 'ArrowRight') {

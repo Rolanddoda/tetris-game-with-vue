@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
-    <Tetris></Tetris>
-  </div>
+  <v-app>
+    <Tetris/>
+  </v-app>
 </template>
 
 <script>
@@ -13,6 +13,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-</style>
