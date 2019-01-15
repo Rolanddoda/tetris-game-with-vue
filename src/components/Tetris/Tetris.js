@@ -1,12 +1,14 @@
 import { tetris_items } from './tetris_items'
 import _cloneDeep from 'lodash/cloneDeep'
 import TopUsers from '@/components/TopUsers/TopUsers.vue'
+import DetailsForm from '@/components/DetailsForm/DetailsForm.vue'
 
 export default {
   name: 'Tetris',
 
   components: {
-    TopUsers
+    TopUsers,
+    DetailsForm
   },
 
   data: () => ({
@@ -27,8 +29,10 @@ export default {
     tetris_before_rotation: null,
     score_for_row: 10,
     total_score: 0,
-    game_over: '',
-    game_started: false
+    game_over: true,
+    game_started: false,
+    dialog: true,
+    stepper: 1
   }),
 
   created() {
