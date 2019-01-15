@@ -25,7 +25,8 @@
             <div class="score">
                 TOTAL SCORE: {{total_score}}
             </div>
-            <v-btn @click="start_new_game()" v-if="!game_started">START NEW GAME</v-btn>
+            <v-btn block large @click="start_new_game()" v-if="!game_started">START NEW GAME</v-btn>
+            <top-users />
         </div>
 
     </div>

@@ -1,8 +1,13 @@
 import { tetris_items } from './tetris_items'
 import _cloneDeep from 'lodash/cloneDeep'
+import TopUsers from '@/components/TopUsers/TopUsers.vue'
 
 export default {
   name: 'Tetris',
+
+  components: {
+    TopUsers
+  },
 
   data: () => ({
     arena: [
