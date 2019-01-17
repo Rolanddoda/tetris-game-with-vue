@@ -4,7 +4,7 @@
 			<h3>Register in TOP 10</h3>
 		</v-card-title>
 		<v-card-text>
-			<v-form>
+			<v-form ref="form">
 				<v-container>
 					<v-layout row wrap>
 
@@ -29,6 +29,7 @@
 							              placeholder="optional"
 							              prepend-icon="mdi-email"
 							              v-model.trim="form.email"
+							              :rules="[rules.email]"
 							/>
 						</v-flex>
 
@@ -37,6 +38,7 @@
 							              placeholder="required"
 							              prepend-icon="mdi-account-heart"
 							              v-model.trim="form.nickname"
+							              :rules="[rules.required]"
 							/>
 						</v-flex>
 
@@ -55,10 +57,25 @@ export default {
       first_name: '',
       last_name: '',
       email: '',
-      nickname: '',
-      score: 200
+      nickname: ''
+    },
+    rules: {
+      required: value => !!value || 'Required.',
+      email: value => {
+        if (!value) return true
+        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return pattern.test(value) || 'Invalid e-mail.'
+      }
     }
-  })
+  }),
+
+  methods: {
+    validate() {
+      if (this.$refs.form.validate()) {
+        this.$emit('save-user', Object.assign({}, this.form))
+      }
+    }
+  }
 }
 </script>
 
