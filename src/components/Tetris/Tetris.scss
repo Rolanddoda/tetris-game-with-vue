@@ -2,7 +2,7 @@
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: 4fr 1fr;
+  grid-template-columns: auto 1fr;
 
   .game-controls {
     font-family: "Adobe Caslon Pro Bold", sans-serif;
@@ -10,19 +10,20 @@
     display: grid;
     align-items: flex-start;
     align-content: start;
+    padding: 10px 30px;
+    grid-gap: 10px;
 
     .score {
       border: 1px solid #537575;
       padding: 10px;
       text-align: center;
       border-radius: 10px 0;
-      margin: 10px;
     }
   }
 
   .tetris-wrapper {
     display: grid;
-    justify-content: center;
+    justify-content: start;
 
     .tetris {
       position: relative;

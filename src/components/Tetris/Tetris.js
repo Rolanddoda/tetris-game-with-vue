@@ -1,8 +1,17 @@
 import { tetris_items } from './tetris_items'
 import _cloneDeep from 'lodash/cloneDeep'
+import db from '@/plugins/firestore'
+import { event } from '@/plugins/event'
+import TopUsers from '@/components/TopUsers/TopUsers.vue'
+import SaveScoreDialog from '@/components/SaveScoreDialog/SaveScoreDialog.vue'
 
 export default {
   name: 'Tetris',
+
+  components: {
+    TopUsers,
+    SaveScoreDialog
+  },
 
   data: () => ({
     arena: [
@@ -22,16 +31,60 @@ export default {
     tetris_before_rotation: null,
     score_for_row: 10,
     total_score: 0,
-    game_over: '',
-    game_started: false
+    game_over: false,
+    game_started: false,
+    top_users: [],
+    save_score_dialog: false,
+    score_submitted: false
   }),
+
+  computed: {
+    can_save_score() {
+      let top_scores = this.top_users.slice().map(user => user.score)
+      return (
+        top_scores.some(score => score < this.total_score) &&
+        !this.score_submitted
+      )
+    }
+  },
+
+  watch: {
+    game_over(val) {
+      if (val && this.can_save_score) {
+        setTimeout(() => {
+          this.save_score_dialog = true
+        }, 1500)
+      }
+    }
+  },
 
   created() {
     this.add_new_tetris()
     this.keyboard_controls()
+    this.get_top_users()
   },
 
   methods: {
+    get_top_users() {
+      db.collection('users')
+        .orderBy('score', 'desc')
+        .limit(10)
+        .onSnapshot(res => {
+          let users = []
+          res.docs.forEach(doc => users.push(doc.data()))
+          this.top_users = users
+        })
+    },
+
+    save_user(form) {
+      db.collection('users')
+        .add(form)
+        .then(() => {
+          event.$emit('snackbar', 'Score saved successfully!')
+          this.score_submitted = true
+        })
+    },
+
     start_new_game(init = false) {
       if (!init) {
         Object.assign(this.$data, this.$options.data.apply(this))
@@ -39,6 +92,7 @@ export default {
       }
       this.game_interval = setInterval(this.game_flow, 1000)
       this.game_started = true
+      this.get_top_users()
     },
 
     game_flow() {
@@ -68,7 +122,7 @@ export default {
         this.new_tetris_position++
       } else {
         if (this.arena.every(row => row.includes(1)) && pos < 2) {
-          this.game_over = 'GAME OVER'
+          this.game_over = true
           clearInterval(this.game_interval)
         } else if (this.new_tetris_item.rotated) {
           this.new_tetris_item = { ...this.tetris_before_rotation }
