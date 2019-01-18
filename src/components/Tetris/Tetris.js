@@ -35,7 +35,8 @@ export default {
     game_started: false,
     top_users: [],
     save_score_dialog: false,
-    score_submitted: false
+    score_submitted: false,
+    animating: false
   }),
 
   computed: {
@@ -137,7 +138,7 @@ export default {
 
     keyboard_controls() {
       document.addEventListener('keydown', event => {
-        if (this.game_over || !this.game_started) return
+        if (this.game_over || !this.game_started || this.animating) return
         if (event.code === 'ArrowLeft') {
           this.change_tetris_position(-1)
         } else if (event.code === 'ArrowRight') {
@@ -380,6 +381,7 @@ export default {
       indexes.forEach(async index => {
         let rows = document.querySelectorAll('.tetris-row')
         rows[index].classList.add('to-clear')
+        this.animating = true
         await this.animate_row(rows, index)
       })
     },
@@ -390,6 +392,7 @@ export default {
           rows[index].classList.remove('to-clear')
           this.arena.splice(index, 1)
           this.arena.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0])
+          this.animating = false
           resolve(true)
         }, 200)
       })
