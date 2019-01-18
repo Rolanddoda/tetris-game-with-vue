@@ -364,21 +364,35 @@ export default {
     },
 
     check_for_score(arena) {
-      let indexes_to_clear = []
+      let indexes = []
       let c_arena = [...arena].reverse()
 
       c_arena.forEach((row, index) => {
         if (row.every(item => item >= 1)) {
-          indexes_to_clear.push(index)
           this.total_score += this.score_for_row * (index + 1)
         }
       })
 
-      for (let index = indexes_to_clear.length - 1; index >= 0; index--) {
-        c_arena.splice(indexes_to_clear[index], 1)
-      }
-      indexes_to_clear.forEach(() => c_arena.push([0, 0, 0, 0, 0, 0, 0, 0, 0]))
-      this.arena = c_arena.reverse()
+      arena.forEach((row, index) => {
+        if (row.every(item => item >= 1)) indexes.push(index)
+      })
+
+      indexes.forEach(async index => {
+        let rows = document.querySelectorAll('.tetris-row')
+        rows[index].classList.add('to-clear')
+        await this.animate_row(rows, index)
+      })
+    },
+
+    animate_row(rows, index) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          rows[index].classList.remove('to-clear')
+          this.arena.splice(index, 1)
+          this.arena.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0])
+          resolve(true)
+        }, 200)
+      })
     }
   }
 }

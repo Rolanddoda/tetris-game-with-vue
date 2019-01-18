@@ -44,6 +44,13 @@
         padding: 10px;
       }
 
+      .to-clear {
+        animation: fadeOut  .2s;
+        .tetris-column {
+          background: yellow;
+        }
+      }
+
       .game-over {
         position: absolute;
         width: 100%;
@@ -69,4 +76,12 @@
 
 .increase-height-enter, .increase-height-leave-to {
   max-height: 0;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity:1;
+    background: yellow;
+  }
+  to {opacity:0;}
 }
