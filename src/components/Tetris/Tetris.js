@@ -35,7 +35,8 @@ export default {
     game_started: false,
     top_users: [],
     save_score_dialog: false,
-    score_submitted: false
+    score_submitted: false,
+    animating: false
   }),
 
   computed: {
@@ -137,7 +138,7 @@ export default {
 
     keyboard_controls() {
       document.addEventListener('keydown', event => {
-        if (this.game_over || !this.game_started) return
+        if (this.game_over || !this.game_started || this.animating) return
         if (event.code === 'ArrowLeft') {
           this.change_tetris_position(-1)
         } else if (event.code === 'ArrowRight') {
@@ -364,21 +365,37 @@ export default {
     },
 
     check_for_score(arena) {
-      let indexes_to_clear = []
+      let indexes = []
       let c_arena = [...arena].reverse()
 
       c_arena.forEach((row, index) => {
         if (row.every(item => item >= 1)) {
-          indexes_to_clear.push(index)
           this.total_score += this.score_for_row * (index + 1)
         }
       })
 
-      for (let index = indexes_to_clear.length - 1; index >= 0; index--) {
-        c_arena.splice(indexes_to_clear[index], 1)
-      }
-      indexes_to_clear.forEach(() => c_arena.push([0, 0, 0, 0, 0, 0, 0, 0, 0]))
-      this.arena = c_arena.reverse()
+      arena.forEach((row, index) => {
+        if (row.every(item => item >= 1)) indexes.push(index)
+      })
+
+      indexes.forEach(async index => {
+        this.animating = true
+        let rows = document.querySelectorAll('.tetris-row')
+        rows[index].classList.add('to-clear')
+        await this.animate_row(rows, index)
+      })
+    },
+
+    animate_row(rows, index) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          rows[index].classList.remove('to-clear')
+          this.arena.splice(index, 1)
+          this.arena.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0])
+          this.animating = false
+          resolve(true)
+        }, 200)
+      })
     }
   }
 }
