@@ -379,9 +379,9 @@ export default {
       })
 
       indexes.forEach(async index => {
+        this.animating = true
         let rows = document.querySelectorAll('.tetris-row')
         rows[index].classList.add('to-clear')
-        this.animating = true
         await this.animate_row(rows, index)
       })
     },
