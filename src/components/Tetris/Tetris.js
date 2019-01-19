@@ -36,7 +36,8 @@ export default {
     top_users: [],
     save_score_dialog: false,
     score_submitted: false,
-    animating: false
+    animating: false,
+    loading: false
   }),
 
   computed: {
@@ -56,6 +57,13 @@ export default {
           this.save_score_dialog = true
         }, 1500)
       }
+    },
+    animating(val) {
+      if (val) {
+        clearInterval(this.game_interval)
+      } else {
+        this.game_interval = setInterval(this.game_flow, 1000)
+      }
     }
   },
 
@@ -67,6 +75,7 @@ export default {
 
   methods: {
     get_top_users() {
+      this.loading = true
       db.collection('users')
         .orderBy('score', 'desc')
         .limit(10)
@@ -74,6 +83,7 @@ export default {
           let users = []
           res.docs.forEach(doc => users.push(doc.data()))
           this.top_users = users
+          this.loading = false
         })
     },
 
@@ -364,7 +374,7 @@ export default {
       }) //tetris moved left
     },
 
-    check_for_score(arena) {
+    async check_for_score(arena) {
       let indexes = []
       let c_arena = [...arena].reverse()
 
@@ -378,11 +388,21 @@ export default {
         if (row.every(item => item >= 1)) indexes.push(index)
       })
 
-      indexes.forEach(async index => {
+      if (indexes.length) {
         this.animating = true
-        let rows = document.querySelectorAll('.tetris-row')
-        rows[index].classList.add('to-clear')
-        await this.animate_row(rows, index)
+        await this.calculate_row_animation(indexes)
+        this.animating = false
+      }
+    },
+
+    calculate_row_animation(indexes) {
+      return new Promise(resolve => {
+        indexes.forEach(async (item, index) => {
+          let rows = document.querySelectorAll('.tetris-row')
+          rows[item].classList.add('to-clear')
+          await this.animate_row(rows, item)
+          if (index + 1 >= indexes.length) resolve(true)
+        })
       })
     },
 
@@ -392,9 +412,8 @@ export default {
           rows[index].classList.remove('to-clear')
           this.arena.splice(index, 1)
           this.arena.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0])
-          this.animating = false
           resolve(true)
-        }, 200)
+        }, 400)
       })
     }
   }

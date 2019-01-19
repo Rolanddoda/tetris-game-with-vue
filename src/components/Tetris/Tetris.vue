@@ -7,7 +7,9 @@
 					<div v-for="(column, index) of row"
 					     :key="index"
 					     :class="['tetris-column', { active: column }]"
-					></div>
+					>
+						<div class="tetris-cell"></div>
+					</div>
 				</div>
 				<transition name="increase-height" mode="out-in">
 					<div class="game-over" v-if="game_over">
@@ -47,7 +49,7 @@
 			<v-btn block large @click="start_new_game()" v-if="!game_started">START
 				NEW GAME
 			</v-btn>
-			<top-users :top-users="top_users"/> <!-- component -->
+			<top-users :top-users="top_users" :loading="loading" /> <!-- component -->
 
 		</div>
 
