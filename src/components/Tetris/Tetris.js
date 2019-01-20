@@ -107,10 +107,10 @@ export default {
     },
 
     game_flow() {
-      if (this.should_stop_tetris_flow()) return
       let arena = [...this.arena]
       let pos = this.new_tetris_position //pos = position
       let rows_count = this.new_tetris_item.rows_count - 1
+      if (this.should_stop_tetris_flow(arena, pos, rows_count)) return
 
       arena = this.clear_arena(arena)
 
@@ -131,18 +131,13 @@ export default {
         this.tetris_before_rotation = null
         this.arena = arena
         this.new_tetris_position++
+      } else if (this.new_tetris_item.rotated) {
+        this.new_tetris_item = { ...this.tetris_before_rotation }
+        this.game_flow()
       } else {
-        if (this.arena.every(row => row.includes(1)) && pos < 2) {
-          this.game_over = true
-          clearInterval(this.game_interval)
-        } else if (this.new_tetris_item.rotated) {
-          this.new_tetris_item = { ...this.tetris_before_rotation }
-          this.game_flow()
-        } else {
-          this.remove_active_tetris()
-          this.check_for_score([...this.arena])
-          this.add_new_tetris()
-        }
+        this.remove_active_tetris()
+        this.check_for_score([...this.arena])
+        this.add_new_tetris()
       }
     },
 
@@ -175,7 +170,24 @@ export default {
       return collides
     },
 
-    should_stop_tetris_flow() {
+    should_stop_tetris_flow(arena, pos, rows_count) {
+      const { starts, expands, value } = this.new_tetris_item
+      let next_row_collides = false
+      const last_row = value[value.length - 1]
+
+      for (let cell = starts; cell < starts + expands; cell++) {
+        if (pos < 3 && arena[pos][cell] === 1 && last_row[cell]) {
+          next_row_collides = true
+          break
+        }
+      }
+
+      if (next_row_collides && pos < rows_count) {
+        this.game_over = true
+        clearInterval(this.game_interval)
+        return true
+      }
+
       if (this.new_tetris_position > 8) {
         this.check_for_score([...this.arena])
         this.remove_active_tetris()
