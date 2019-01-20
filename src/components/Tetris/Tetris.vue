@@ -40,6 +40,7 @@
 						/>
 					</div>
 				</transition>
+				<play-info v-if="!game_over && !game_started" />
 			</div>
 		</div>
 
