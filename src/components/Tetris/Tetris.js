@@ -142,7 +142,13 @@ export default {
 
     keyboard_controls() {
       document.addEventListener('keydown', event => {
-        if (this.game_over || !this.game_started || this.animating) return
+        if (
+          this.game_over ||
+          !this.game_started ||
+          this.animating ||
+          !this.new_tetris_position
+        )
+          return
         if (event.code === 'ArrowLeft') {
           this.change_tetris_position(-1)
         } else if (event.code === 'ArrowRight') {
