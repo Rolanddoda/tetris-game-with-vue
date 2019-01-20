@@ -38,7 +38,7 @@
 							              placeholder="required"
 							              prepend-icon="mdi-account-heart"
 							              v-model.trim="form.nickname"
-							              :rules="[rules.required]"
+							              :rules="[rules.required, rules.unique]"
 							/>
 						</v-flex>
 
@@ -51,6 +51,10 @@
 
 <script>
 export default {
+  props: {
+    users: Array
+  },
+
   data: () => ({
     valid: false,
     form: {
@@ -58,16 +62,28 @@ export default {
       last_name: '',
       email: '',
       nickname: ''
-    },
-    rules: {
-      required: value => !!value || 'Required.',
-      email: value => {
-        if (!value) return true
-        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        return pattern.test(value) || 'Invalid e-mail.'
-      }
     }
   }),
+
+  computed: {
+    rules() {
+      return {
+        required: value => !!value || 'Required.',
+        email: value => {
+          if (!value) return true
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail.'
+        },
+        unique: value => {
+          if (!value) return true
+          return (
+            !!this.users.find(user => user.nickname !== value) ||
+            'Already taken'
+          )
+        }
+      }
+    }
+  },
 
   methods: {
     validate() {

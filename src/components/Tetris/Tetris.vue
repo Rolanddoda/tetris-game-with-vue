@@ -24,17 +24,18 @@
 								Start new game
 							</v-btn>
 
-							<template v-if="can_save_score">
-							or
-							<v-btn large outline dark @click="save_score_dialog = true">
-								Register in top 10
-							</v-btn>
+							<template v-if="can_save_score && !save_score_dialog">
+								or
+								<v-btn large outline dark @click="save_score_dialog = true">
+									Register in top 10
+								</v-btn>
 							</template>
 						</div>
 
 						<save-score-dialog ref="dialog"
 						                   :open.sync="save_score_dialog"
 						                   :score="total_score"
+						                   :users="top_users"
 						                   @save-user="save_user"
 						/>
 					</div>
