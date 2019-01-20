@@ -76,10 +76,10 @@ export default {
         },
         unique: value => {
           if (!value) return true
-          return (
-            !!this.users.find(user => user.nickname !== value) ||
-            'Already taken'
-          )
+          if (!this.users.length) return true
+          if (this.users.find(user => user.nickname === value))
+            return 'Already taken'
+          return true
         }
       }
     }
