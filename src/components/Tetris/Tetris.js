@@ -4,13 +4,15 @@ import db from '@/plugins/firestore'
 import { event } from '@/plugins/event'
 import TopUsers from '@/components/TopUsers/TopUsers.vue'
 import SaveScoreDialog from '@/components/SaveScoreDialog/SaveScoreDialog.vue'
+import PlayInfo from '@/components/PlayInfo/PlayInfo.vue'
 
 export default {
   name: 'Tetris',
 
   components: {
     TopUsers,
-    SaveScoreDialog
+    SaveScoreDialog,
+    PlayInfo
   },
 
   data: () => ({
