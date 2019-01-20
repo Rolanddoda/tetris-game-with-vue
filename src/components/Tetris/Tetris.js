@@ -42,11 +42,10 @@ export default {
 
   computed: {
     can_save_score() {
-      let top_scores = this.top_users.slice().map(user => user.score)
-      return (
-        top_scores.some(score => score < this.total_score) &&
-        !this.score_submitted
-      )
+      if (this.score_submitted || !this.total_score) return false
+      let top_scores = this.top_users.map(user => user.score)
+      if (top_scores.length < 10) return true
+      return top_scores.some(score => score < this.total_score)
     }
   },
 
@@ -55,7 +54,7 @@ export default {
       if (val && this.can_save_score) {
         setTimeout(() => {
           this.save_score_dialog = true
-        }, 1500)
+        }, 1000)
       }
     },
     animating(val) {

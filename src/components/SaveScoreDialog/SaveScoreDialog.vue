@@ -35,7 +35,7 @@
 
 							<v-stepper-content step="2">
 
-								<details-form ref="form" @save-user="save_user" /> <!-- component -->
+								<details-form ref="form" :users="users" @save-user="save_user" /> <!-- component -->
 
 								<v-btn color="primary" @click="validate_form">
 									Save
@@ -64,7 +64,8 @@ export default {
 
   props: {
     open: Boolean,
-    score: Number
+    score: Number,
+	  users: Array
   },
 
   data: () => ({
